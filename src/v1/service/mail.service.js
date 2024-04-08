@@ -1,0 +1,4 @@
+
+exports.sendActivationMail = (to, link) => {
+
+}

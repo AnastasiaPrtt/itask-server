@@ -7,7 +7,7 @@ const router = new Router()
 router.post(
 	'/signup',
 	body('email').custom(email => {
-		return User.findOne({ where: { email } }).then(user => {
+		return db.User.findOne({ where: { email } }).then(user => {
 			if (user) {
 				console.log(user);
 				return Promise.reject('Email уже используется')
@@ -21,5 +21,11 @@ router.post(
 	'/login',
 	userController.login
 )
+router.post('/logout', userController.logout)
+router.get('/activate/:link', userController.activate)
+router.get('/refresh', userController.refresh)
+
+
+router.get('/users', userController.getUsers)
 
 module.exports = router;
