@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "start:dev": "nodemon ./bin/www.js",
-    "migrate:run": "npx sequelize-cli db:migrate && npx sequelize-cli db:seed:all",
+    "migrate:run": "npx sequelize-cli db:migrate",
     "migrate:down": "npx sequelize-cli db:migrate:undo"
   },
   "keywords": [],
@@ -16,13 +16,15 @@
     "cookie-parser": "^1.4.6",
     "cors": "^2.8.5",
     "dotenv": "^16.4.5",
-    "express": "^4.18.3",
+    "express": "^4.19.2",
     "express-validator": "^7.0.1",
     "jsonwebtoken": "^9.0.2",
     "morgan": "^1.10.0",
+    "nodemailer": "^6.9.13",
     "nodemon": "^3.1.0",
-    "pg": "^8.11.3",
+    "pg": "^8.11.5",
     "pg-hstore": "^2.3.4",
+    "secure-random-password": "^0.2.3",
     "sequelize": "^6.37.1",
     "sequelize-cli": "^6.6.2",
     "uuid": "^9.0.1"
