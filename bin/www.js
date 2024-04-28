@@ -8,7 +8,8 @@ const app = require('../app');
 const debug = require('debug')('server:server');
 const http = require('http');
 const dotenv = require('dotenv');
-const sequelize = require("../db");
+
+const {sequelize} = require("../src/v1/models");
 
 dotenv.config();
 

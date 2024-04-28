@@ -1,10 +1,9 @@
 const Router = require('express');
 const router = new Router()
 
-const userController = require('../controllers/user.controllers')
-
 router.use('/auth', require('./auth'))
-
-
+router.use('/professor', require('./professor'))
+router.use('/course', require('./course'))
+router.use('/group', require('./group'))
 
 module.exports = router;
