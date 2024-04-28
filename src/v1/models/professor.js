@@ -3,25 +3,27 @@ const {
   Model
 } = require('sequelize');
 module.exports = (sequelize, DataTypes) => {
-  class Token extends Model {
+  class Professor extends Model {
     static associate(models) {
       // Define association here
-      Token.belongsTo(models.users, { foreignKey: 'userId' });
+      Professor.belongsTo(models.users, { foreignKey: 'userId' });
     }
   }
-  Token.init({
+  Professor.init({
     id: {
       primaryKey: true,
       type: DataTypes.UUID,
       defaultValue: DataTypes.UUIDV4
     },
     userId: DataTypes.UUID,
-    refreshToken: DataTypes.STRING,
+    fullName: DataTypes.STRING,
+    tel: DataTypes.STRING,
+    description: DataTypes.STRING,
     createdAt: DataTypes.DATE,
     updatedAt: DataTypes.DATE,
   }, {
     sequelize,
-    modelName: 'tokens',
+    modelName: 'professors',
   });
-  return Token;
+  return Professor;
 };
