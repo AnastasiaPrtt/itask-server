@@ -6,8 +6,8 @@ exports.create = async (req, res, next) => {
 		if (userData.role !== 'admin') {
 			throw ApiError.BadRequest('У вас нет прав администратора')
 		}
-		const { email, role } = req.body
-		const professorData = await professorService.create(email, role, req.user)
+		const { email } = req.body
+		const professorData = await professorService.create(email, req.user)
 		return res.json(professorData)
 	} catch (error) {
 		next(error)
