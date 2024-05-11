@@ -13,7 +13,7 @@ exports.register = async (req, res, next) => {
 		}
 		const { email, password, role } = req.body
 		const userData = await userService.registration(email, password, role)
-		res.cookie('refreshToken', userData.refreshToken, { maxAge: 30 * 24 * 60 * 60 * 1000, httpOnly: true })
+		// res.cookie('refreshToken', userData.refreshToken, { maxAge: 30 * 24 * 60 * 60 * 1000, httpOnly: true })
 		return res.json(userData)
 	} catch (error) {
 		next(error)
@@ -24,7 +24,7 @@ exports.login = async (req, res, next) => {
 	try {
 		const { email, password } = req.body
 		userData = await userService.login(email, password)
-		res.cookie('refreshToken', userData.refreshToken, { maxAge: 30 * 24 * 60 * 60 * 1000, httpOnly: true })
+		// res.cookie('refreshToken', userData.refreshToken, { maxAge: 30 * 24 * 60 * 60 * 1000, httpOnly: true })
 		return res.json(userData)
 	} catch (error) {
 		next(error)
@@ -35,7 +35,7 @@ exports.logout = async (req, res, next) => {
 	try {
 		const {refreshToken} = req.cookies
 		const token = await userService.logout(refreshToken)
-		res.clearCookie('refreshToken')
+		// res.clearCookie('refreshToken')
 		res.json({token})
 	} catch (error) {
 		next(error)
@@ -56,7 +56,7 @@ exports.refresh = async (req, res, next) => {
 	try {
 		const {refreshToken} = req.body
 		userData = await userService.refresh(refreshToken)
-		res.cookie('refreshToken', userData.refreshToken, { maxAge: 30 * 24 * 60 * 60 * 1000, httpOnly: true })
+		// res.cookie('refreshToken', userData.refreshToken, { maxAge: 30 * 24 * 60 * 60 * 1000, httpOnly: true })
 		return res.json(userData)
 	} catch (error) {
 		next(error)
@@ -64,7 +64,8 @@ exports.refresh = async (req, res, next) => {
 }
 exports.getUsers = async (req, res, next) => {
 	try {
-		const users = await userService.getAllUsers()
+		const data = req.query
+		const users = await userService.getAllUsers(data)
 		return res.json(users)
 	} catch (error) {
 		next(error)

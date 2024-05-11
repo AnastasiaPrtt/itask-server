@@ -5,8 +5,8 @@ const {
 module.exports = (sequelize, DataTypes) => {
   class Professor extends Model {
     static associate(models) {
-      // Define association here
-      Professor.belongsTo(models.users, { foreignKey: 'userId' });
+      Professor.belongsTo(models.users, { foreignKey: 'userId', as: 'users' });
+      Professor.belongsToMany(models.groupCycles, { through: 'professorCourses' })
     }
   }
   Professor.init({

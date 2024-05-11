@@ -2,33 +2,27 @@
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up(queryInterface, Sequelize) {
-    await queryInterface.createTable('students', {
+    await queryInterface.createTable('groupCycles', {
       id: {
         primaryKey: true,
         type: Sequelize.UUID,
         defaultValue: Sequelize.UUIDV4
       },
-      userId: {
-        type: Sequelize.UUID,
-        references: {
-          model: 'users',
-          key: 'id'
-        },
-        allowNull: false
-      },
-      fullName: {
-        type: Sequelize.STRING
-      },
-      tel: {
-        type: Sequelize.STRING
-      },
       groupId: {
         type: Sequelize.UUID,
+        allowNull: false,
         references: {
           model: 'groups',
           key: 'id'
-        },
-        allowNull: false
+        }
+      },
+      courseId: {
+        type: Sequelize.UUID,
+        allowNull: false,
+        references: {
+          model: 'courses',
+          key: 'id'
+        }
       },
       createdAt: {
         allowNull: false,
@@ -41,6 +35,6 @@ module.exports = {
     });
   },
   async down(queryInterface, Sequelize) {
-    await queryInterface.dropTable('students');
+    await queryInterface.dropTable('groupCycles');
   }
 };

@@ -9,36 +9,56 @@ const ApiError = require('../exceptions/api-error')
 const password = require('secure-random-password');
 
 class professorService {
-	async create(email, role) {
-		if (role !== 'professor') throw ApiError.BadRequest(`Не допустимая роль для преподавателя`)
+	async create(email) {
 		const candidate = await db.sequelize.models.users.findOne({ where: { email } });
 		if (candidate) {
 			throw ApiError.BadRequest(`Пользователь с почтовым адресом ${email} уже существует`)
 		}
-		const newPassword = password.randomPassword({ characters: [password.lower, password.upper, password.digits] });
-		const hashPassword = await bcrypt.hash(newPassword, 3);
+		// const newPassword = password.randomPassword({ characters: [password.lower, password.upper, password.digits] });
+		const hashPassword = await bcrypt.hash('HelloWorld', 10);
 		const activationLink = uuid.v4();
-		const user = await db.sequelize.models.users.create({ email, password: hashPassword, role, activationLink })
-		await mailService.sendActivationMailAndPassword(email, `${process.env.API_URL}/api/auth/activate/${activationLink}`, newPassword)
+		const user = await db.sequelize.models.users.create({ email, password: hashPassword, role: 'professor', activationLink })
+		// await mailService.sendActivationMailAndPassword(email, `${process.env.API_URL}/api/auth/activate/${activationLink}`, newPassword)
 		const userDto = new UserDto(user)
 		const tokens = tokenService.generateTokens({ ...userDto })
 		await tokenService.saveToken(userDto.id, tokens.refreshToken)
 
 		const professor = await db.sequelize.models.professors.create({ userId: userDto.id })
+		const professorData = await db.sequelize.models.professors.findOne({
+			where: { id: professor.id },
+			include: {
+				model: db.sequelize.models.users,
+				as: 'users',
+				attributes: ['email', 'isActivated']
+			},
+		})
 		return {
-			professor
+			professor: professorData,
+			message: 'Пользователь успешно создан'
 		}
 	}
 
-	async getAll(limit, page, search){
-		console.log(page, limit, search);
-		const users = await db.sequelize.models.professors.findAndCountAll({
-			where: {
-				fullName: {[Op.like]: `%${search}%`}
+	async getAll(limit, page, search) {
+		const queryOptions = {
+			where: search ? {
+				[Op.or]: [
+					{ fullName: { [Op.like]: `%${search}%` } },
+					{ '$users.email$': { [Op.like]: `%${search}%` } }
+				]
+			} : {},
+			include: {
+				model: db.sequelize.models.users,
+				as: 'users',
+				attributes: ['email', 'isActivated']
 			},
-			limit: limit,
-			offset: (page - 1) * limit
-		})
+		};
+
+		if (!search) {
+			queryOptions.limit = limit;
+			queryOptions.offset = (page - 1) * limit;
+		}
+
+		const users = await db.sequelize.models.professors.findAndCountAll(queryOptions);
 		return users
 	}
 }
